@@ -4,15 +4,16 @@ const projectSchema = new mongoose.Schema(
   {
     title: {
       type: String,
+      trim: true,
       required: true,
     },
     description: {
       type: String,
       required: true,
     },
-    img: {
-      type: String,
-      required: true,
+    image: {
+      public_id: String,
+      secure_url: String,
     },
     tags: {
       type: [String],

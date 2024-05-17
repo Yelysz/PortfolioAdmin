@@ -2,17 +2,18 @@ import mongoose from "mongoose";
 
 const skillSchema = new mongoose.Schema(
   {
-    img: {
-      type: String,
-      required: true,
+    image: {
+      public_id: String,
+      secure_url: String,
     },
     alt: {
       type: String,
-      required: true,
+      trim: true,
     },
-    name: {
+    title: {
       type: String,
       required: true,
+      trim: true
     },
   },
   {
