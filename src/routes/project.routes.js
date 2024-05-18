@@ -8,6 +8,8 @@ import {
   updateProject,
 } from "../controllers/project.controller.js";
 import fileUpload from "express-fileupload";
+import { validateSchema } from "../middlewares/validate.middleware.js";
+import { projectSchema } from "../schemas/project.schema.js";
 
 const router = Router();
 
@@ -20,6 +22,7 @@ router.post(
     useTempFiles: true,
     tempFileDir: "./uploads",
   }),
+  validateSchema(projectSchema),
   createProject
 );
 router.delete("/projects/:id", authRequired, deleteProject);
@@ -30,6 +33,7 @@ router.put(
     useTempFiles: true,
     tempFileDir: "./uploads",
   }),
+  validateSchema(projectSchema),
   updateProject
 );
 

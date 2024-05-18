@@ -8,6 +8,8 @@ import {
   deleteSkill,
 } from "../controllers/skill.controller.js";
 import fileUpload from "express-fileupload";
+import { validateSchema } from "../middlewares/validate.middleware.js";
+import { skillSchema } from "../schemas/skill.schema.js";
 
 const router = Router();
 
@@ -20,6 +22,7 @@ router.post(
     useTempFiles: true,
     tempFileDir: "./uploads",
   }),
+  validateSchema(skillSchema),
   createSkill
 );
 router.delete("/skills/:id", authRequired, deleteSkill);
@@ -30,6 +33,7 @@ router.put(
     useTempFiles: true,
     tempFileDir: "./uploads",
   }),
+  validateSchema(skillSchema),
   updateSkill
 );
 
