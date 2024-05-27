@@ -17,13 +17,16 @@ const projectSchema = new mongoose.Schema(
     },
     tags: {
       type: [String],
-      required: true,
     },
     github: {
       type: String,
     },
     web: {
       type: String,
+    },
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
     },
   },
   {

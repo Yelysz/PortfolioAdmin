@@ -6,11 +6,11 @@ import { educationSchema } from "../schemas/education.schema.js";
 
 const router =Router();
 
-router.get('/educations', authRequired, getEducations)
-router.get('/educations/:id', authRequired, getEducation)
-router.post('/educations', authRequired, validateSchema(educationSchema), createEducation)
-router.delete('/educations/:id', authRequired, deleteEducation)
-router.put('/educations/:id', authRequired,  validateSchema(educationSchema),  updateEducation)
+router.get('/educations', authRequired, getEducations);
+router.get('/educations/:id', authRequired, getEducation);
+router.post('/educations', authRequired, validateSchema(educationSchema), createEducation);
+router.delete('/educations/:id', authRequired, deleteEducation);
+router.put('/educations/:id', authRequired, updateEducation);
 
 
 export default router;

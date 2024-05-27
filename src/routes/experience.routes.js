@@ -10,6 +10,6 @@ router.get('/experiences', authRequired, getExperiences)
 router.get('/experiences/:id', authRequired, getExperience)
 router.post('/experiences', authRequired, validateSchema(experienceSchema), createExperience)
 router.delete('/experiences/:id', authRequired, deleteExperience)
-router.put('/experiences/:id', authRequired, validateSchema(experienceSchema),  updateExperience)
+router.put('/experiences/:id', authRequired, updateExperience)
 
 export default router;

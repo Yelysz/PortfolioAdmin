@@ -4,7 +4,7 @@ import fs from "fs-extra";
 
 export const getSkills = async (req, res) => {
   try {
-    const skills = await Skill.find();
+    const skills = await Skill.find({ user: req.user.id }).populate("user");
     res.json(skills);
   } catch (error) {
     console.error("Error getting skills:", error);
@@ -19,11 +19,12 @@ export const createSkill = async (req, res) => {
     const skill = new Skill({
       title,
       alt,
+      user: req.user.id,
     });
 
     if (req.files?.image) {
       const result = await uploadImage(req.files.image.tempFilePath);
-      skill.img = {
+      skill.image = {
         public_id: result.public_id,
         secure_url: result.secure_url,
       };
@@ -69,10 +70,10 @@ export const updateSkill = async (req, res) => {
     skill.alt = alt;
 
     if (req.files?.image) {
-      const result = await uploadImage(req.files.image.tempFilePath);
       if (skill.image?.public_id) {
         await deleteImage(skill.image.public_id);
       }
+      const result = await uploadImage(req.files.image.tempFilePath);
       skill.image = {
         public_id: result.public_id,
         secure_url: result.secure_url,
@@ -100,7 +101,7 @@ export const deleteSkill = async (req, res) => {
       await deleteImage(skill.image.public_id);
     }
 
-    return res.status(200).json({ message: "Skill deleted successfully" });
+    return res.status(204).json({ message: "Skill deleted successfully" });
   } catch (error) {
     console.error("Error deleting skill:", error);
     return res.status(500).json({ message: "Internal server error" });

@@ -18,3 +18,4 @@ export async function uploadImage(filePath) {
 export async function deleteImage(publicId) {
   return await cloudinary.uploader.destroy(publicId);
 }
+

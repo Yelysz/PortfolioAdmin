@@ -2,7 +2,9 @@ import Education from "../models/education.model.js";
 
 export const getEducations = async (req, res) => {
   try {
-    const educations = await Education.find();
+    const educations = await Education.find({ user: req.user.id }).populate(
+      "user"
+    );
     res.json(educations);
   } catch (error) {
     console.error("Error getting educations:", error);
@@ -20,6 +22,7 @@ export const createEducation = async (req, res) => {
       description,
       firstDate,
       secondDate,
+      user: req.user.id,
     });
 
     await education.save();
@@ -79,7 +82,7 @@ export const deleteEducation = async (req, res) => {
       return res.status(404).json({ message: "Education not found" });
     }
 
-    await education.remove();
+    await Education.deleteOne({ _id: id });
     res.json({ message: "Education deleted successfully" });
   } catch (error) {
     console.error("Error deleting education:", error);

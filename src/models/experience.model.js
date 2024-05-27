@@ -22,6 +22,10 @@ const experienceSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,

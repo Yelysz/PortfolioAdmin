@@ -10,6 +10,7 @@ import {
 import fileUpload from "express-fileupload";
 import { validateSchema } from "../middlewares/validate.middleware.js";
 import { projectSchema } from "../schemas/project.schema.js";
+import { parseTagsMiddleware } from "../middlewares/validateTags.js";
 
 const router = Router();
 
@@ -22,6 +23,7 @@ router.post(
     useTempFiles: true,
     tempFileDir: "./uploads",
   }),
+  parseTagsMiddleware,
   validateSchema(projectSchema),
   createProject
 );
@@ -33,7 +35,7 @@ router.put(
     useTempFiles: true,
     tempFileDir: "./uploads",
   }),
-  validateSchema(projectSchema),
+  parseTagsMiddleware,
   updateProject
 );
 

@@ -4,20 +4,7 @@ import fs from "fs-extra";
 
 export const getProjects = async (req, res) => {
   try {
-    const {
-      page = 1,
-      limit = 10,
-      sortBy = "createdAt",
-      sortOrder = "desc",
-    } = req.query;
-
-    const options = {
-      sort: { [sortBy]: sortOrder === "desc" ? -1 : 1 },
-      limit: parseInt(limit),
-      skip: (parseInt(page) - 1) * parseInt(limit),
-    };
-
-    const projects = await Project.find({}, null, options);
+    const projects = await Project.find({ user: req.user.id }).populate("user");
     res.json(projects);
   } catch (error) {
     console.error("Error getting projects:", error);
@@ -26,15 +13,27 @@ export const getProjects = async (req, res) => {
 };
 
 export const createProject = async (req, res) => {
-  const { title, description, tags, github, web } = req.body;
-
   try {
+    const { title, description, tags, github, web } = req.body;
+    // console.log('Request body:', req.body);
+
+    let parsedTags;
+    try {
+      parsedTags = Array.isArray(tags) ? tags : JSON.parse(tags);
+    } catch (e) {
+      console.error("Error parsing tags:", e);
+      parsedTags = [];
+    }
+
+    // console.log('Parsed tags:', parsedTags);
+
     const project = new Project({
       title,
       description,
-      tags,
+      tags: parsedTags,
       github,
       web,
+      user: req.user.id,
     });
 
     if (req.files?.image) {
@@ -71,38 +70,46 @@ export const getProject = async (req, res) => {
 };
 
 export const updateProject = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, tags, github, web } = req.body;
-
   try {
+    const { id } = req.params;
+    const { title, description, tags, github, web } = req.body;
+    
+    let parsedTags;
+    try {
+      parsedTags = Array.isArray(tags) ? tags : JSON.parse(tags);
+    } catch (e) {
+      console.error("Error parsing tags:", e);
+      parsedTags = [];
+    }
+
     const project = await Project.findById(id);
+
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    project.title = title;
-    project.description = description;
-    project.tags = tags;
-    project.github = github;
-    project.web = web;
-
+    project.title = title || project.title;
+    project.description = description || project.description;
+    project.tags = parsedTags.length ? parsedTags : project.tags;
+    project.github = github || project.github;
+    project.web = web || project.web;
+    
     if (req.files?.image) {
+      if (project.image?.public_id) {
+        await deleteImage(project.image.public_id);
+      }
+
       const result = await uploadImage(req.files.image.tempFilePath);
       project.image = {
         public_id: result.public_id,
         secure_url: result.secure_url,
       };
 
-      if (project.image.public_id) {
-        await deleteImage(project.image.public_id);
-      }
-
       await fs.unlink(req.files.image.tempFilePath);
     }
 
     await project.save();
-
-    res.json(project);
+    res.status(200).json(project);
   } catch (error) {
     console.error("Error updating project:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -121,7 +128,7 @@ export const deleteProject = async (req, res) => {
       await deleteImage(project.image.public_id);
     }
 
-    return res.status(200).json({ message: "Project deleted successfully" });
+    return res.status(204).json({ message: "Project deleted successfully" });
   } catch (error) {
     console.error("Error deleting project:", error);
     return res.status(500).json({ message: "Internal server error" });

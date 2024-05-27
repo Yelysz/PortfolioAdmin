@@ -37,6 +37,6 @@ export const loginSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, { message: "Username can only contain letters, numbers, and underscores" }),
 
   password: z.string()
-    .min(8, { message: "Password must be at least 8 characters long" })
+    .min(4, { message: "Password must be at least 8 characters long" })
     .max(100, { message: "Password must be at most 100 characters long" })
 });

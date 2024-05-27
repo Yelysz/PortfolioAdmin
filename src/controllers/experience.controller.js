@@ -2,7 +2,7 @@ import Experience from "../models/experience.model.js";
 
 export const getExperiences = async (req, res) => {
   try {
-    const experiences = await Experience.find();
+    const experiences = await Experience.find({ user: req.user.id }).populate("user");
     res.json(experiences);
   } catch (error) {
     console.error("Error getting experiences:", error);
@@ -20,6 +20,7 @@ export const createExperience = async (req, res) => {
       description,
       firstDate,
       secondDate,
+      user: req.user.id,
     });
 
     await experience.save();
@@ -79,7 +80,7 @@ export const deleteExperience = async (req, res) => {
       return res.status(404).json({ message: "Experience not found" });
     }
 
-    await experience.remove();
+    await Experience.deleteOne({ _id: id });
     res.json({ message: "Experience deleted successfully" });
   } catch (error) {
     console.error("Error deleting experience:", error);

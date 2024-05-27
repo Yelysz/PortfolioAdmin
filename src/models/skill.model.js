@@ -15,6 +15,10 @@ const skillSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,

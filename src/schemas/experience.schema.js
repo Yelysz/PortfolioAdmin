@@ -16,10 +16,6 @@ export const experienceSchema = z.object({
       required_error: "Description is required",
     })
     .min(1, { message: "Description cannot be empty" }),
-  firstDate: z.date({
-    required_error: "First Date is required",
-  }),
-  secondDate: z.date({
-    required_error: "Second Date is required",
-  }),
+  firstDate: z.string().transform((str) => new Date(str)),
+  secondDate: z.string().transform((str) => new Date(str)),
 });

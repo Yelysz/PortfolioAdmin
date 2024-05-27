@@ -33,7 +33,6 @@ router.put(
     useTempFiles: true,
     tempFileDir: "./uploads",
   }),
-  validateSchema(skillSchema),
   updateSkill
 );
 
