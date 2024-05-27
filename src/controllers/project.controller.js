@@ -4,7 +4,7 @@ import fs from "fs-extra";
 
 export const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ user: req.user.id }).populate("user");
+    const projects = await Project.find();
     res.json(projects);
   } catch (error) {
     console.error("Error getting projects:", error);
