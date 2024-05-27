@@ -14,7 +14,7 @@ import { parseTagsMiddleware } from "../middlewares/validateTags.js";
 
 const router = Router();
 
-router.get("/projects", getProjects);
+router.get("/projects", authRequired, getProjects);
 router.get("/projects/:id", authRequired, getProject);
 router.post(
   "/projects",
